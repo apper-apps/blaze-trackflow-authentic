@@ -207,9 +207,18 @@ const hasActiveFilters = statusFilters.length > 0 || priorityFilters.length > 0 
   return (
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
-          <p className="text-gray-600 mt-1">Track and manage all your team's issues</p>
+<div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
+            <p className="text-gray-600 mt-1">Track and manage all your team's issues</p>
+          </div>
+          <button
+            onClick={handleNewIssue}
+            className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
+          >
+            <ApperIcon name="Plus" size={16} className="mr-2" />
+            Create Issue
+          </button>
         </div>
 <div className="mb-6">
           <div className="max-w-md">
