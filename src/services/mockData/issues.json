@@ -1,0 +1,134 @@
+[
+  {
+    "Id": 1,
+    "title": "Login page not responsive on mobile devices",
+    "description": "The login form is not displaying correctly on mobile devices. The input fields are overlapping and the submit button is not visible on smaller screens. This affects user experience significantly and needs immediate attention.",
+    "status": "open",
+    "priority": "critical",
+    "assignee": "Sarah Johnson",
+    "createdDate": "2024-01-15T10:30:00Z",
+    "updatedDate": "2024-01-15T10:30:00Z",
+    "project": "Authentication System"
+  },
+  {
+    "Id": 2,
+    "title": "Dashboard charts loading slowly",
+    "description": "The analytics charts on the main dashboard are taking 10-15 seconds to load, causing poor user experience. Investigation shows the API queries are not optimized and may need caching implementation.",
+    "status": "in-progress",
+    "priority": "high",
+    "assignee": "Mike Chen",
+    "createdDate": "2024-01-14T14:20:00Z",
+    "updatedDate": "2024-01-16T09:45:00Z",
+    "project": "Analytics Dashboard"
+  },
+  {
+    "Id": 3,
+    "title": "Add dark mode toggle to user preferences",
+    "description": "Users have requested the ability to switch between light and dark themes. This should be implemented as a toggle in the user preferences section and persist across sessions.",
+    "status": "open",
+    "priority": "medium",
+    "assignee": "Emily Rodriguez",
+    "createdDate": "2024-01-13T16:45:00Z",
+    "updatedDate": "2024-01-13T16:45:00Z",
+    "project": "User Interface"
+  },
+  {
+    "Id": 4,
+    "title": "Database connection timeout on high traffic",
+    "description": "During peak hours, the application experiences database connection timeouts resulting in 500 errors for users. This appears to be related to connection pool configuration and needs immediate investigation.",
+    "status": "resolved",
+    "priority": "critical",
+    "assignee": "David Kim",
+    "createdDate": "2024-01-12T11:30:00Z",
+    "updatedDate": "2024-01-14T13:20:00Z",
+    "project": "Backend Infrastructure"
+  },
+  {
+    "Id": 5,
+    "title": "Implement email notifications for issue updates",
+    "description": "Team members should receive email notifications when issues assigned to them are updated, commented on, or have their status changed. This will improve team communication and issue tracking.",
+    "status": "in-progress",
+    "priority": "medium",
+    "assignee": "Lisa Park",
+    "createdDate": "2024-01-11T09:15:00Z",
+    "updatedDate": "2024-01-15T11:30:00Z",
+    "project": "Notification System"
+  },
+  {
+    "Id": 6,
+    "title": "Fix broken file upload in project settings",
+    "description": "Users are unable to upload project logos or documentation files through the project settings page. The upload button appears to be non-functional and no error messages are displayed.",
+    "status": "open",
+    "priority": "high",
+    "assignee": "John Anderson",
+    "createdDate": "2024-01-10T13:45:00Z",
+    "updatedDate": "2024-01-10T13:45:00Z",
+    "project": "File Management"
+  },
+  {
+    "Id": 7,
+    "title": "Add search functionality to issue list",
+    "description": "The current issue list doesn't have search capabilities, making it difficult to find specific issues in projects with many tickets. Implement search by title, assignee, and tags.",
+    "status": "closed",
+    "priority": "medium",
+    "assignee": "Alex Thompson",
+    "createdDate": "2024-01-09T10:20:00Z",
+    "updatedDate": "2024-01-12T16:30:00Z",
+    "project": "Issue Tracking"
+  },
+  {
+    "Id": 8,
+    "title": "Update user profile validation rules",
+    "description": "Current user profile form validation is too restrictive for international users. Need to update email validation and phone number formats to support global users properly.",
+    "status": "open",
+    "priority": "low",
+    "assignee": "Rachel Green",
+    "createdDate": "2024-01-08T15:30:00Z",
+    "updatedDate": "2024-01-08T15:30:00Z",
+    "project": "User Management"
+  },
+  {
+    "Id": 9,
+    "title": "Memory leak in real-time notification system",
+    "description": "The real-time notification WebSocket connection is causing memory leaks in long-running browser sessions. Users report browser slowdown after several hours of usage.",
+    "status": "in-progress",
+    "priority": "high",
+    "assignee": "Tom Wilson",
+    "createdDate": "2024-01-07T12:00:00Z",
+    "updatedDate": "2024-01-14T10:15:00Z",
+    "project": "Real-time Features"
+  },
+  {
+    "Id": 10,
+    "title": "Implement bulk actions for issue management",
+    "description": "Team leads need the ability to perform bulk actions on multiple issues at once, such as changing status, reassigning, or adding tags. This will significantly improve workflow efficiency.",
+    "status": "open",
+    "priority": "medium",
+    "assignee": "Maria Garcia",
+    "createdDate": "2024-01-06T14:45:00Z",
+    "updatedDate": "2024-01-06T14:45:00Z",
+    "project": "Issue Tracking"
+  },
+  {
+    "Id": 11,
+    "title": "API rate limiting causing form submission failures",
+    "description": "Users are experiencing form submission failures due to aggressive API rate limiting. The current limits are too restrictive for normal usage patterns and need adjustment.",
+    "status": "resolved",
+    "priority": "high",
+    "assignee": "Chris Lee",
+    "createdDate": "2024-01-05T11:20:00Z",
+    "updatedDate": "2024-01-08T09:30:00Z",
+    "project": "API Infrastructure"
+  },
+  {
+    "Id": 12,
+    "title": "Add keyboard shortcuts for common actions",
+    "description": "Power users have requested keyboard shortcuts for common actions like creating new issues, navigating between sections, and quick status changes to improve productivity.",
+    "status": "open",
+    "priority": "low",
+    "assignee": "Kevin Brown",
+    "createdDate": "2024-01-04T16:10:00Z",
+    "updatedDate": "2024-01-04T16:10:00Z",
+    "project": "User Experience"
+  }
+]
