@@ -1,5 +1,7 @@
 import projectsData from '@/services/mockData/projects.json';
 
+import projectsData from '@/services/mockData/projects.json';
+
 class ProjectService {
   constructor() {
     this.projects = [...projectsData];
