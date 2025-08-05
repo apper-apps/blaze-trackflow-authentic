@@ -34,21 +34,11 @@ const isIssuesPage = location.pathname === "/issues";
       <Sidebar isOpen={sidebarOpen} onClose={handleSidebarClose} />
       
       <div className="flex flex-col flex-1 lg:ml-64">
-        <Header 
+<Header 
           onMobileMenuToggle={handleMobileMenuToggle}
-showNewButton={isIssuesPage || isDashboardPage || isProjectsPage}
+          showNewButton={isProjectsPage}
           onNewClick={() => {
-            if (isIssuesPage && window.handleNewIssue) {
-              window.handleNewIssue();
-            } else if (isDashboardPage) {
-              // Navigate to issues page and trigger new issue modal
-              window.location.href = '/issues';
-              setTimeout(() => {
-                if (window.handleNewIssue) {
-                  window.handleNewIssue();
-                }
-              }, 100);
-            } else if (isProjectsPage && window.handleNewProject) {
+            if (isProjectsPage && window.handleNewProject) {
               window.handleNewProject();
             }
           }}
