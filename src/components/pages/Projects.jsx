@@ -219,9 +219,9 @@ const Projects = () => {
 
                   {/* Team Members */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center">
+<div className="flex items-center">
                       <div className="flex -space-x-2">
-                        {project.teamMembers.slice(0, 3).map((member, index) => (
+                        {(project.teamMembers ?? []).slice(0, 3).map((member, index) => (
                           <div
                             key={index}
                             className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white"
@@ -230,15 +230,15 @@ const Projects = () => {
                             {member.split(' ').map(n => n[0]).join('').toUpperCase()}
                           </div>
                         ))}
-                        {project.teamMembers.length > 3 && (
+                        {(project.teamMembers?.length ?? 0) > 3 && (
                           <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-xs font-medium border-2 border-white">
-                            +{project.teamMembers.length - 3}
+                            +{(project.teamMembers?.length ?? 0) - 3}
                           </div>
                         )}
                       </div>
-                      {project.teamMembers.length > 0 && (
+                      {(project.teamMembers?.length ?? 0) > 0 && (
                         <span className="ml-3 text-xs text-gray-500">
-                          {project.teamMembers.length} member{project.teamMembers.length !== 1 ? 's' : ''}
+                          {project.teamMembers?.length ?? 0} member{(project.teamMembers?.length ?? 0) !== 1 ? 's' : ''}
                         </span>
                       )}
                     </div>
