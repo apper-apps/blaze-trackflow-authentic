@@ -8,6 +8,7 @@ import ApperIcon from "@/components/ApperIcon";
 import StatusBadge from "@/components/molecules/StatusBadge";
 import PriorityBadge from "@/components/molecules/PriorityBadge";
 import ActivityItem from "@/components/molecules/ActivityItem";
+import Layout from "@/components/organisms/Layout";
 import Issues from "@/components/pages/Issues";
 import Button from "@/components/atoms/Button";
 
@@ -56,7 +57,7 @@ const Dashboard = () => {
         recentActivity
       });
       setLastUpdated(new Date());
-    } catch (error) {
+} catch (error) {
       toast.error("Failed to load dashboard data");
       console.error("Dashboard data loading error:", error);
     } finally {
@@ -164,7 +165,7 @@ const Dashboard = () => {
     );
   }
 
-  const statusChartOptions = {
+const statusChartOptions = {
     chart: {
       type: 'donut',
       events: {
@@ -176,8 +177,6 @@ const Dashboard = () => {
         }
       }
     },
-    labels: dashboardData.statusBreakdown.map(item => item.label),
-    colors: ['#3B82F6', '#F59E0B', '#10B981', '#6B7280'],
     legend: {
       position: 'bottom'
     },
