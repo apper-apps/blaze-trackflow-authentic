@@ -72,15 +72,9 @@ const handleNewIssue = () => {
 React.useEffect(() => {
     if (typeof window !== 'undefined') {
       console.log('Issues: Exposing handleNewIssue to window');
-      window.handleNewIssue = () => {
+window.handleNewIssue = () => {
         console.log('Issues: handleNewIssue called from window');
-        try {
-          handleNewIssue();
-        } catch (error) {
-          console.error('Issues: Error in handleNewIssue:', error);
-          // Fallback - directly set modal state
-          setIsCreateModalOpen(true);
-        }
+        setIsCreateModalOpen(true);
       };
     }
     return () => {
