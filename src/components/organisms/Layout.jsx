@@ -10,7 +10,7 @@ function Layout({ children }) {
   
 const isIssuesPage = location.pathname === "/issues";
   const isDashboardPage = location.pathname === "/dashboard";
-  
+  const isProjectsPage = location.pathname === "/projects" || location.pathname.startsWith("/projects/");
   const handleNewIssue = () => {
     // Find the Issues component and call its handleNewIssue method
     const issuesChild = Children.toArray(children).find(child => 
@@ -36,7 +36,7 @@ const isIssuesPage = location.pathname === "/issues";
       <div className="flex flex-col flex-1 lg:ml-64">
         <Header 
           onMobileMenuToggle={handleMobileMenuToggle}
-showNewButton={isIssuesPage || isDashboardPage}
+showNewButton={isIssuesPage || isDashboardPage || isProjectsPage}
           onNewClick={() => {
             if (isIssuesPage && window.handleNewIssue) {
               window.handleNewIssue();
@@ -48,6 +48,8 @@ showNewButton={isIssuesPage || isDashboardPage}
                   window.handleNewIssue();
                 }
               }, 100);
+            } else if (isProjectsPage && window.handleNewProject) {
+              window.handleNewProject();
             }
           }}
         />

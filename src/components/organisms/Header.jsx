@@ -1,9 +1,19 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import Breadcrumbs from "@/components/molecules/Breadcrumbs";
 import ApperIcon from "@/components/ApperIcon";
 
 const Header = ({ onMobileMenuToggle, title, showNewButton = false, onNewClick }) => {
+  const location = useLocation();
+  
+  const getButtonText = () => {
+    if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
+      return "New Project";
+    }
+    return "New Issue";
+  };
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -22,7 +32,7 @@ const Header = ({ onMobileMenuToggle, title, showNewButton = false, onNewClick }
         {showNewButton && (
           <Button onClick={onNewClick} className="gap-2">
             <ApperIcon name="Plus" size={16} />
-            New Issue
+            {getButtonText()}
           </Button>
         )}
       </div>

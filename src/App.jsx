@@ -12,11 +12,12 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
         <Layout>
-          <Routes>
+<Routes>
             <Route path="/" element={<Navigate to="/issues" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/issues" element={<Issues />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/projects/:id" element={<Projects />} />
             <Route path="/reports" element={<Reports />} />
           </Routes>
         </Layout>
