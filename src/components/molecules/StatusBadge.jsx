@@ -23,6 +23,11 @@ const StatusBadge = ({ status }) => {
       variant: "closed",
       icon: "XCircle",
       label: "Closed"
+    },
+    "not-resolved": {
+      variant: "open",
+      icon: "AlertCircle",
+      label: "Not Resolved"
     }
   };
 
