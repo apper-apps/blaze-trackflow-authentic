@@ -16,7 +16,8 @@ async getAll() {
           { field: { Name: "createdAt" } },
           { field: { Name: "updatedAt" } },
           { field: { Name: "memberCount" } },
-          { field: { Name: "issueCount" } }
+          { field: { Name: "issueCount" } },
+          { field: { Name: "teamMembers" } }
         ],
         orderBy: [{ fieldName: "createdAt", sorttype: "DESC" }]
       };
@@ -48,7 +49,8 @@ async getById(id) {
           { field: { Name: "createdAt" } },
           { field: { Name: "updatedAt" } },
           { field: { Name: "memberCount" } },
-          { field: { Name: "issueCount" } }
+          { field: { Name: "issueCount" } },
+          { field: { Name: "teamMembers" } }
         ]
       };
 
@@ -80,7 +82,8 @@ async create(projectData) {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           memberCount: projectData.memberCount || 0,
-          issueCount: projectData.issueCount || 0
+          issueCount: projectData.issueCount || 0,
+          teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(',') : projectData.teamMembers || ""
         }]
       };
 
@@ -113,7 +116,7 @@ async create(projectData) {
 
 async update(id, projectData) {
     try {
-      const params = {
+const params = {
         records: [{
           Id: parseInt(id),
           ...(projectData.name && { Name: projectData.name }),
@@ -121,6 +124,9 @@ async update(id, projectData) {
           ...(projectData.status && { status: projectData.status }),
           ...(projectData.memberCount !== undefined && { memberCount: parseInt(projectData.memberCount) }),
           ...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
+          ...(projectData.teamMembers !== undefined && { 
+            teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(',') : projectData.teamMembers || ""
+          }),
           updatedAt: new Date().toISOString()
         }]
       };

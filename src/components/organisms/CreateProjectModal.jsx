@@ -11,11 +11,11 @@ const CreateProjectModal = ({ onClose, onSubmit, project = null }) => {
 const [formData, setFormData] = useState({
     name: project?.name || "",
     description: project?.description || "",
-    status: project?.status || "Active"
+    status: project?.status || "Active",
+    teamMembers: project?.teamMembers ? project.teamMembers.split(',') : []
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
 const statusOptions = [
     "Active",
     "In Progress", 
@@ -63,9 +63,24 @@ const statusOptions = [
       setErrors(prev => ({ ...prev, [field]: "" }));
     }
   };
+// Team member options - these would typically come from an API call
+  const teamMemberOptions = [
+    "John Doe",
+    "Jane Smith", 
+    "Mike Johnson",
+    "Sarah Wilson",
+    "David Brown",
+    "Lisa Davis",
+    "Tom Wilson",
+    "Emily Jones"
+  ];
 
-
-
+  const handleTeamMemberChange = (selectedOptions) => {
+    setFormData(prev => ({
+      ...prev,
+      teamMembers: selectedOptions
+    }));
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-backdrop">
@@ -87,7 +102,7 @@ const statusOptions = [
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+<form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <div className="space-y-6">
             {/* Project Name */}
             <div>
@@ -121,7 +136,7 @@ const statusOptions = [
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
               </label>
-<Select
+              <Select
                 value={formData.status}
                 onChange={(e) => handleInputChange("status", e.target.value)}
               >
@@ -134,6 +149,37 @@ const statusOptions = [
             </div>
 
             {/* Team Members */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Team Members
+              </label>
+              <div className="space-y-2">
+                {teamMemberOptions.map((member) => (
+                  <label key={member} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.teamMembers.includes(member)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          handleTeamMemberChange([...formData.teamMembers, member]);
+                        } else {
+                          handleTeamMemberChange(formData.teamMembers.filter(m => m !== member));
+                        }
+                      }}
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm text-gray-700">{member}</span>
+                  </label>
+                ))}
+              </div>
+              {formData.teamMembers.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-xs text-gray-500">
+                    Selected: {formData.teamMembers.join(', ')}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Form Actions */}
