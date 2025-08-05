@@ -159,11 +159,11 @@ const ProjectDetailModal = ({ project, onClose, onEdit, onDelete }) => {
               {/* Team Members */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Team Members</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {project.teamMembers.map((member, index) => (
+<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {(project.teamMembers || []).map((member, index) => (
                     <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                        {member.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        {member?.split(' ').map(n => n[0]).join('').toUpperCase()}
                       </div>
                       <span className="font-medium text-gray-900">{member}</span>
                     </div>
