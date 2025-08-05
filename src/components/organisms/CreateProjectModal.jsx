@@ -11,19 +11,7 @@ const CreateProjectModal = ({ onClose, onSubmit, project = null }) => {
 const [formData, setFormData] = useState({
     name: project?.name || "",
     description: project?.description || "",
-    status: project?.status || "Active",
-    teamMembers: (() => {
-      if (!project?.teamMembers) return [];
-      if (Array.isArray(project.teamMembers)) return project.teamMembers;
-      // Handle database Tag field format (comma-separated string)
-      if (typeof project.teamMembers === 'string') {
-        return project.teamMembers
-          .split(',')
-          .map(member => member.trim())
-          .filter(member => member.length > 0);
-      }
-      return [];
-    })()
+    status: project?.status || "Active"
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -77,12 +65,6 @@ const statusOptions = [
   };
 
 
-const removeTeamMember = (memberToRemove) => {
-    setFormData(prev => ({
-      ...prev,
-      teamMembers: prev.teamMembers.filter(member => member !== memberToRemove)
-    }));
-  };
 
 
   return (
@@ -152,76 +134,6 @@ const removeTeamMember = (memberToRemove) => {
             </div>
 
             {/* Team Members */}
-<div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Team Members
-              </label>
-              
-              {/* Team Member Selection */}
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <Select
-                    value=""
-                    onChange={(e) => {
-                      if (e.target.value && !formData.teamMembers.includes(e.target.value)) {
-                        setFormData(prev => ({
-                          ...prev,
-                          teamMembers: [...prev.teamMembers, e.target.value]
-                        }));
-                      }
-                      e.target.value = "";
-                    }}
-                    className="flex-1"
-                  >
-                    <option value="">Select team member...</option>
-                    <option value="John Smith">John Smith</option>
-                    <option value="Sarah Johnson">Sarah Johnson</option>
-                    <option value="Michael Chen">Michael Chen</option>
-                    <option value="Emily Davis">Emily Davis</option>
-                    <option value="David Wilson">David Wilson</option>
-                    <option value="Lisa Anderson">Lisa Anderson</option>
-                    <option value="Robert Brown">Robert Brown</option>
-                    <option value="Jennifer Taylor">Jennifer Taylor</option>
-                    <option value="Christopher Lee">Christopher Lee</option>
-                    <option value="Amanda White">Amanda White</option>
-                  </Select>
-                </div>
-
-              </div>
-
-              {/* Selected Team Members List */}
-              {formData.teamMembers.length > 0 && (
-                <div className="mt-4 space-y-3">
-                  <div className="text-sm font-medium text-gray-700">
-                    Selected Members ({formData.teamMembers.length})
-                  </div>
-                  {formData.teamMembers.map((member, index) => (
-                    <div
-                      key={`${member}-${index}`}
-                      className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200 hover:shadow-sm transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-md">
-                          {member.split(' ').map(n => n[0] || '').join('').slice(0, 2).toUpperCase() || 'U'}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900">{member}</span>
-                          <span className="text-xs text-gray-500">Team Member</span>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeTeamMember(member)}
-                        className="p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200 group"
-                        title="Remove team member"
-                      >
-                        <ApperIcon name="X" size={16} className="text-gray-400 group-hover:text-red-500" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Form Actions */}

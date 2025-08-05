@@ -6,7 +6,7 @@ const apperClient = new ApperClient({
 });
 
 export const projectService = {
-  async getAll() {
+async getAll() {
     try {
       const params = {
         fields: [
@@ -16,8 +16,7 @@ export const projectService = {
           { field: { Name: "createdAt" } },
           { field: { Name: "updatedAt" } },
           { field: { Name: "memberCount" } },
-          { field: { Name: "issueCount" } },
-          { field: { Name: "teamMembers" } }
+          { field: { Name: "issueCount" } }
         ],
         orderBy: [{ fieldName: "createdAt", sorttype: "DESC" }]
       };
@@ -31,8 +30,7 @@ export const projectService = {
 
       return (response.data || []).map(project => ({
         ...project,
-        name: project.Name,
-        teamMembers: project.teamMembers ? project.teamMembers.split(',').map(m => m.trim()) : []
+        name: project.Name
       }));
     } catch (error) {
       console.error("Error fetching projects:", error?.response?.data?.message || error.message);
@@ -40,7 +38,7 @@ export const projectService = {
     }
   },
 
-  async getById(id) {
+async getById(id) {
     try {
       const params = {
         fields: [
@@ -50,8 +48,7 @@ export const projectService = {
           { field: { Name: "createdAt" } },
           { field: { Name: "updatedAt" } },
           { field: { Name: "memberCount" } },
-          { field: { Name: "issueCount" } },
-          { field: { Name: "teamMembers" } }
+          { field: { Name: "issueCount" } }
         ]
       };
 
@@ -65,8 +62,7 @@ export const projectService = {
       const project = response.data;
       return {
         ...project,
-        name: project.Name,
-        teamMembers: project.teamMembers ? project.teamMembers.split(',').map(m => m.trim()) : []
+        name: project.Name
       };
     } catch (error) {
       console.error(`Error fetching project with ID ${id}:`, error?.response?.data?.message || error.message);
@@ -74,7 +70,7 @@ export const projectService = {
     }
   },
 
-  async create(projectData) {
+async create(projectData) {
     try {
       const params = {
         records: [{
@@ -84,8 +80,7 @@ export const projectService = {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           memberCount: projectData.memberCount || 0,
-          issueCount: projectData.issueCount || 0,
-          teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(', ') : ""
+          issueCount: projectData.issueCount || 0
         }]
       };
 
@@ -107,8 +102,7 @@ export const projectService = {
         const project = response.results[0].data;
         return {
           ...project,
-          name: project.Name,
-          teamMembers: project.teamMembers ? project.teamMembers.split(',').map(m => m.trim()) : []
+          name: project.Name
         };
       }
     } catch (error) {
@@ -117,7 +111,7 @@ export const projectService = {
     }
   },
 
-  async update(id, projectData) {
+async update(id, projectData) {
     try {
       const params = {
         records: [{
@@ -126,22 +120,7 @@ export const projectService = {
           ...(projectData.description !== undefined && { description: projectData.description }),
           ...(projectData.status && { status: projectData.status }),
           ...(projectData.memberCount !== undefined && { memberCount: parseInt(projectData.memberCount) }),
-...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
-          ...(projectData.teamMembers !== undefined && { 
-            teamMembers: (() => {
-              // Handle team members conversion for database storage (Tag field expects comma-separated string)
-              if (Array.isArray(projectData.teamMembers)) {
-                // Convert array to comma-separated string for database
-                return projectData.teamMembers.length > 0 ? projectData.teamMembers.join(', ') : '';
-              } else if (typeof projectData.teamMembers === 'string') {
-                // Already a string, pass through
-                return projectData.teamMembers;
-              } else {
-                // Handle null/undefined/other types
-                return '';
-              }
-            })()
-          }),
+          ...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
           updatedAt: new Date().toISOString()
         }]
       };
@@ -164,8 +143,7 @@ export const projectService = {
         const project = response.results[0].data;
         return {
           ...project,
-          name: project.Name,
-          teamMembers: project.teamMembers ? project.teamMembers.split(',').map(m => m.trim()) : []
+          name: project.Name
         };
       }
     } catch (error) {
@@ -201,15 +179,5 @@ export const projectService = {
       console.error("Error deleting project:", error?.response?.data?.message || error.message);
       throw error;
     }
-  },
-
-  async getProjectMembers(projectId) {
-    try {
-      const project = await this.getById(projectId);
-      return project.teamMembers || [];
-    } catch (error) {
-      console.error("Error fetching project members:", error?.response?.data?.message || error.message);
-      throw error;
-    }
-  }
+}
 };
