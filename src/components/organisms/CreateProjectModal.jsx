@@ -25,7 +25,6 @@ const [formData, setFormData] = useState({
       return [];
     })()
   });
-  const [newMember, setNewMember] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -77,16 +76,6 @@ const statusOptions = [
     }
   };
 
-const addTeamMember = () => {
-    const trimmedMember = newMember.trim();
-    if (trimmedMember && !formData.teamMembers.some(member => member.toLowerCase() === trimmedMember.toLowerCase())) {
-      setFormData(prev => ({
-        ...prev,
-        teamMembers: [...prev.teamMembers, trimmedMember]
-      }));
-      setNewMember("");
-    }
-  };
 
 const removeTeamMember = (memberToRemove) => {
     setFormData(prev => ({
@@ -95,12 +84,6 @@ const removeTeamMember = (memberToRemove) => {
     }));
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTeamMember();
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-backdrop">
@@ -204,25 +187,6 @@ const removeTeamMember = (memberToRemove) => {
                   </Select>
                 </div>
 
-                {/* Custom Member Input */}
-                <div className="flex gap-2">
-                  <Input
-                    value={newMember}
-                    onChange={(e) => setNewMember(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Or enter custom team member name"
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    onClick={addTeamMember}
-                    variant="outline"
-                    disabled={!newMember.trim()}
-                    title="Add custom team member"
-                  >
-                    <ApperIcon name="Plus" size={16} />
-                  </Button>
-                </div>
               </div>
 
               {/* Selected Team Members List */}
