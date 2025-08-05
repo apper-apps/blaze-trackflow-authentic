@@ -126,9 +126,21 @@ export const projectService = {
           ...(projectData.description !== undefined && { description: projectData.description }),
           ...(projectData.status && { status: projectData.status }),
           ...(projectData.memberCount !== undefined && { memberCount: parseInt(projectData.memberCount) }),
-          ...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
+...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
           ...(projectData.teamMembers !== undefined && { 
-            teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(', ') : projectData.teamMembers 
+            teamMembers: (() => {
+              // Handle team members conversion for database storage (Tag field expects comma-separated string)
+              if (Array.isArray(projectData.teamMembers)) {
+                // Convert array to comma-separated string for database
+                return projectData.teamMembers.length > 0 ? projectData.teamMembers.join(', ') : '';
+              } else if (typeof projectData.teamMembers === 'string') {
+                // Already a string, pass through
+                return projectData.teamMembers;
+              } else {
+                // Handle null/undefined/other types
+                return '';
+              }
+            })()
           }),
           updatedAt: new Date().toISOString()
         }]
