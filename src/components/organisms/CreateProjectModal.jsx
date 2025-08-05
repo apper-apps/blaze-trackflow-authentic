@@ -158,33 +158,68 @@ const removeTeamMember = (memberToRemove) => {
             </div>
 
             {/* Team Members */}
-            <div>
+<div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Team Members
               </label>
               
-              {/* Add Member Input */}
-              <div className="flex gap-2 mb-3">
-                <Input
-                  value={newMember}
-                  onChange={(e) => setNewMember(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Enter team member name"
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  onClick={addTeamMember}
-                  variant="outline"
-                  disabled={!newMember.trim()}
-                >
-                  <ApperIcon name="Plus" size={16} />
-                </Button>
+              {/* Team Member Selection */}
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Select
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value && !formData.teamMembers.includes(e.target.value)) {
+                        setFormData(prev => ({
+                          ...prev,
+                          teamMembers: [...prev.teamMembers, e.target.value]
+                        }));
+                      }
+                      e.target.value = "";
+                    }}
+                    className="flex-1"
+                  >
+                    <option value="">Select team member...</option>
+                    <option value="John Smith">John Smith</option>
+                    <option value="Sarah Johnson">Sarah Johnson</option>
+                    <option value="Michael Chen">Michael Chen</option>
+                    <option value="Emily Davis">Emily Davis</option>
+                    <option value="David Wilson">David Wilson</option>
+                    <option value="Lisa Anderson">Lisa Anderson</option>
+                    <option value="Robert Brown">Robert Brown</option>
+                    <option value="Jennifer Taylor">Jennifer Taylor</option>
+                    <option value="Christopher Lee">Christopher Lee</option>
+                    <option value="Amanda White">Amanda White</option>
+                  </Select>
+                </div>
+
+                {/* Custom Member Input */}
+                <div className="flex gap-2">
+                  <Input
+                    value={newMember}
+                    onChange={(e) => setNewMember(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Or enter custom team member name"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    onClick={addTeamMember}
+                    variant="outline"
+                    disabled={!newMember.trim()}
+                    title="Add custom team member"
+                  >
+                    <ApperIcon name="Plus" size={16} />
+                  </Button>
+                </div>
               </div>
 
-              {/* Team Members List */}
-{formData.teamMembers.length > 0 && (
-                <div className="space-y-3">
+              {/* Selected Team Members List */}
+              {formData.teamMembers.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  <div className="text-sm font-medium text-gray-700">
+                    Selected Members ({formData.teamMembers.length})
+                  </div>
                   {formData.teamMembers.map((member, index) => (
                     <div
                       key={`${member}-${index}`}
