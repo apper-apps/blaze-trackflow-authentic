@@ -12,7 +12,18 @@ const [formData, setFormData] = useState({
     name: project?.name || "",
     description: project?.description || "",
     status: project?.status || "Active",
-    teamMembers: Array.isArray(project?.teamMembers) ? project?.teamMembers : []
+    teamMembers: (() => {
+      if (!project?.teamMembers) return [];
+      if (Array.isArray(project.teamMembers)) return project.teamMembers;
+      // Handle database Tag field format (comma-separated string)
+      if (typeof project.teamMembers === 'string') {
+        return project.teamMembers
+          .split(',')
+          .map(member => member.trim())
+          .filter(member => member.length > 0);
+      }
+      return [];
+    })()
   });
   const [newMember, setNewMember] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
