@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 import NavItem from "@/components/molecules/NavItem";
 import ApperIcon from "@/components/ApperIcon";
+import { AuthContext } from "../../App";
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const { logout } = useContext(AuthContext);
+  const user = useSelector((state) => state.user.user);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -39,6 +52,30 @@ const Sidebar = ({ isOpen, onClose }) => {
             Reports
           </NavItem>
         </nav>
+
+        {/* User Profile and Logout */}
+        <div className="px-4 py-4 border-t border-gray-200">
+          {user && (
+            <div className="flex items-center mb-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                {user.firstName ? user.firstName.charAt(0) : 'U'}
+              </div>
+              <div className="ml-3 flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  {user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.emailAddress}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{user.emailAddress}</p>
+              </div>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+          >
+            <ApperIcon name="LogOut" size={16} className="mr-3" />
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Mobile Sidebar */}
