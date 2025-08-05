@@ -83,7 +83,7 @@ async create(projectData) {
           updatedAt: new Date().toISOString(),
           memberCount: projectData.memberCount || 0,
           issueCount: projectData.issueCount || 0,
-          teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(',') : projectData.teamMembers || ""
+          ...(projectData.teamMembers && { teamMembers: parseInt(projectData.teamMembers) })
         }]
       };
 
@@ -125,7 +125,7 @@ const params = {
           ...(projectData.memberCount !== undefined && { memberCount: parseInt(projectData.memberCount) }),
           ...(projectData.issueCount !== undefined && { issueCount: parseInt(projectData.issueCount) }),
           ...(projectData.teamMembers !== undefined && { 
-            teamMembers: Array.isArray(projectData.teamMembers) ? projectData.teamMembers.join(',') : projectData.teamMembers || ""
+            teamMembers: projectData.teamMembers ? parseInt(projectData.teamMembers) : null
           }),
           updatedAt: new Date().toISOString()
         }]
