@@ -1,14 +1,16 @@
 [
-  {
+{
     "Id": 1,
     "title": "Login page not responsive on mobile devices",
     "description": "The login form is not displaying correctly on mobile devices. The input fields are overlapping and the submit button is not visible on smaller screens. This affects user experience significantly and needs immediate attention.",
+    "type": "Bug",
     "status": "open",
     "priority": "critical",
     "assignee": "Sarah Johnson",
     "createdDate": "2024-01-15T10:30:00Z",
     "updatedDate": "2024-01-15T10:30:00Z",
-    "project": "Authentication System"
+    "project": "Authentication System",
+    "labels": ["frontend", "mobile", "urgent"]
   },
   {
     "Id": 2,

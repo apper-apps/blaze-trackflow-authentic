@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import CreateIssueModal from "@/components/organisms/CreateIssueModal";
+import { toast } from "react-toastify";
+import { issueService } from "@/services/api/issueService";
+import SearchBar from "@/components/molecules/SearchBar";
 import IssuesTable from "@/components/organisms/IssuesTable";
 import IssueDetailModal from "@/components/organisms/IssueDetailModal";
-import SearchBar from "@/components/molecules/SearchBar";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import { issueService } from "@/services/api/issueService";
-import { toast } from "react-toastify";
-
-const Issues = () => {
+function Issues({ onNewIssueRef }) {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIssue, setSelectedIssue] = useState(null);
+  const [error, setError] = useState(null);
+const [selectedIssue, setSelectedIssue] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadIssues = async () => {
     try {
@@ -34,24 +35,49 @@ const Issues = () => {
     loadIssues();
   }, []);
 
+  const handleNewIssue = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateIssue = async (issueData) => {
+    try {
+      await issueService.create(issueData);
+      await loadIssues();
+      toast.success("Issue created successfully!");
+    } catch (error) {
+      toast.error("Failed to create issue");
+      throw error;
+    }
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+  };
+
   const handleIssueClick = (issue) => {
     setSelectedIssue(issue);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
     setSelectedIssue(null);
+    setIsModalOpen(false);
   };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const filteredIssues = issues.filter(issue =>
-    issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    issue.assignee.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    issue.project.toLowerCase().includes(searchTerm.toLowerCase())
+// Expose handleNewIssue to parent Layout component
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.handleNewIssue = handleNewIssue;
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete window.handleNewIssue;
+      }
+    };
+  }, []);
+const filteredIssues = issues.filter(issue =>
+    issue?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    issue?.assignee?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    issue?.project?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -90,8 +116,11 @@ const Issues = () => {
             <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
             <p className="text-gray-600 mt-1">Track and manage all your team's issues</p>
           </div>
-          <Empty 
-            onAction={() => toast.info("New issue creation coming soon!")}
+<Empty 
+            title="No Issues Yet"
+            description="Get started by creating your first issue."
+            actionLabel="Create Issue"
+            onAction={handleNewIssue}
           />
         </div>
       </div>
@@ -138,10 +167,16 @@ const Issues = () => {
           />
         )}
 
-        <IssueDetailModal
+<IssueDetailModal
           issue={selectedIssue}
           isOpen={isModalOpen}
           onClose={handleModalClose}
+        />
+        
+        <CreateIssueModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={handleCreateIssue}
         />
       </div>
     </div>

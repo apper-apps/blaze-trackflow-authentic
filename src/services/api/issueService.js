@@ -18,12 +18,20 @@ export const issueService = {
     return { ...issue };
   },
 
-  async create(issueData) {
+async create(issueData) {
     await delay(400);
     const maxId = Math.max(...issuesData.map(item => item.Id), 0);
     const newIssue = {
-      ...issueData,
       Id: maxId + 1,
+      title: issueData.title,
+      description: issueData.description,
+      type: issueData.type || "Bug",
+      status: issueData.status || "open",
+      priority: issueData.priority || "medium",
+      assignee: issueData.assignee,
+      project: issueData.project,
+      labels: issueData.labels || [],
+      dueDate: issueData.dueDate || null,
       createdDate: new Date().toISOString(),
       updatedDate: new Date().toISOString()
     };

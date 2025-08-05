@@ -1,11 +1,24 @@
-import React, { useState } from "react";
-import Sidebar from "@/components/organisms/Sidebar";
-import Header from "@/components/organisms/Header";
+import React, { Children, cloneElement, useState } from "react";
 import { useLocation } from "react-router-dom";
+import Header from "@/components/organisms/Header";
+import Sidebar from "@/components/organisms/Sidebar";
 
-const Layout = ({ children }) => {
+function Layout({ children }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  
+  const isIssuesPage = location.pathname === "/issues";
+  
+  const handleNewIssue = () => {
+    // Find the Issues component and call its handleNewIssue method
+    const issuesChild = Children.toArray(children).find(child => 
+      child.type?.name === 'Issues'
+    );
+    if (issuesChild && issuesChild.ref?.current?.handleNewIssue) {
+      issuesChild.ref.current.handleNewIssue();
+    }
+  };
 
   const handleMobileMenuToggle = () => {
     setSidebarOpen(!sidebarOpen);
@@ -14,8 +27,6 @@ const Layout = ({ children }) => {
   const handleSidebarClose = () => {
     setSidebarOpen(false);
   };
-
-  const isIssuesPage = location.pathname === "/issues";
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -26,17 +37,23 @@ const Layout = ({ children }) => {
           onMobileMenuToggle={handleMobileMenuToggle}
           showNewButton={isIssuesPage}
           onNewClick={() => {
-            // Handle new issue creation
-            console.log("New issue clicked");
+            if (isIssuesPage && window.handleNewIssue) {
+              window.handleNewIssue();
+            }
           }}
         />
         
         <main className="flex-1 overflow-auto">
-          {children}
+          <div className="h-full overflow-y-auto">
+            {isIssuesPage ? 
+              cloneElement(children, { onNewIssueRef: handleNewIssue }) : 
+              children
+            }
+          </div>
         </main>
       </div>
     </div>
   );
-};
+}
 
 export default Layout;
