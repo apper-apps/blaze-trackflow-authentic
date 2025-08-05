@@ -8,11 +8,11 @@ import ApperIcon from "@/components/ApperIcon";
 
 const CreateProjectModal = ({ onClose, onSubmit, project = null }) => {
   const isEditing = !!project;
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: project?.name || "",
     description: project?.description || "",
     status: project?.status || "Active",
-    teamMembers: project?.teamMembers || []
+    teamMembers: Array.isArray(project?.teamMembers) ? project?.teamMembers : []
   });
   const [newMember, setNewMember] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,20 +66,21 @@ const statusOptions = [
     }
   };
 
-  const addTeamMember = () => {
-    if (newMember.trim() && !formData.teamMembers.includes(newMember.trim())) {
+const addTeamMember = () => {
+    const trimmedMember = newMember.trim();
+    if (trimmedMember && !formData.teamMembers.some(member => member.toLowerCase() === trimmedMember.toLowerCase())) {
       setFormData(prev => ({
         ...prev,
-        teamMembers: [...prev.teamMembers, newMember.trim()]
+        teamMembers: [...prev.teamMembers, trimmedMember]
       }));
       setNewMember("");
     }
   };
 
-  const removeTeamMember = (member) => {
+const removeTeamMember = (memberToRemove) => {
     setFormData(prev => ({
       ...prev,
-      teamMembers: prev.teamMembers.filter(m => m !== member)
+      teamMembers: prev.teamMembers.filter(member => member !== memberToRemove)
     }));
   };
 
@@ -182,25 +183,29 @@ const statusOptions = [
               </div>
 
               {/* Team Members List */}
-              {formData.teamMembers.length > 0 && (
-                <div className="space-y-2">
+{formData.teamMembers.length > 0 && (
+                <div className="space-y-3">
                   {formData.teamMembers.map((member, index) => (
                     <div
-                      key={index}
-                      className="flex items-center justify-between bg-gray-50 rounded-lg p-3"
+                      key={`${member}-${index}`}
+                      className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200 hover:shadow-sm transition-all duration-200"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                          {member.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-md">
+                          {member.split(' ').map(n => n[0] || '').join('').slice(0, 2).toUpperCase() || 'U'}
                         </div>
-                        <span className="text-sm font-medium text-gray-900">{member}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-gray-900">{member}</span>
+                          <span className="text-xs text-gray-500">Team Member</span>
+                        </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeTeamMember(member)}
-                        className="p-1 hover:bg-gray-200 rounded-md transition-colors"
+                        className="p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200 group"
+                        title="Remove team member"
                       >
-                        <ApperIcon name="X" size={16} className="text-gray-500" />
+                        <ApperIcon name="X" size={16} className="text-gray-400 group-hover:text-red-500" />
                       </button>
                     </div>
                   ))}
