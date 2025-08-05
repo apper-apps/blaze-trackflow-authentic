@@ -39,18 +39,24 @@ async create(issueData) {
     return { ...newIssue };
   },
 
-  async update(id, updateData) {
+async update(id, updateData) {
     await delay(300);
     const index = issuesData.findIndex(item => item.Id === parseInt(id));
     if (index === -1) {
       throw new Error(`Issue with Id ${id} not found`);
     }
+    
+    const oldIssue = { ...issuesData[index] };
     issuesData[index] = {
       ...issuesData[index],
       ...updateData,
       updatedDate: new Date().toISOString()
     };
-    return { ...issuesData[index] };
+    
+    return { 
+      ...issuesData[index], 
+      _previousValues: oldIssue // Include previous values for activity tracking
+    };
   },
 
   async delete(id) {

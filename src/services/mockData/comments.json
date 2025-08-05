@@ -1,0 +1,46 @@
+[
+  {
+    "Id": 1,
+    "issueId": 1,
+    "content": "I've reproduced this issue on mobile Safari. The dropdown menu doesn't appear when tapped.",
+    "authorName": "Sarah Johnson",
+    "authorAvatar": "SJ",
+    "createdDate": "2024-01-15T14:30:00Z",
+    "updatedDate": "2024-01-15T14:30:00Z",
+    "parentId": null,
+    "mentions": []
+  },
+  {
+    "Id": 2,
+    "issueId": 1,
+    "content": "Thanks @Sarah Johnson for testing. Can you check if this happens on other mobile browsers too?",
+    "authorName": "Mike Chen",
+    "authorAvatar": "MC",
+    "createdDate": "2024-01-15T15:45:00Z",
+    "updatedDate": "2024-01-15T15:45:00Z",
+    "parentId": 1,
+    "mentions": ["Sarah Johnson"]
+  },
+  {
+    "Id": 3,
+    "issueId": 2,
+    "content": "The API endpoint is returning a 500 error when processing large datasets. I've attached the error logs.",
+    "authorName": "David Kim",
+    "authorAvatar": "DK",
+    "createdDate": "2024-01-16T09:15:00Z",
+    "updatedDate": "2024-01-16T09:15:00Z",
+    "parentId": null,
+    "mentions": []
+  },
+  {
+    "Id": 4,
+    "issueId": 2,
+    "content": "I can reproduce this on the staging environment. @Mike Chen can you look into the database query optimization?",
+    "authorName": "Emily Rodriguez",
+    "authorAvatar": "ER",
+    "createdDate": "2024-01-16T11:20:00Z",
+    "updatedDate": "2024-01-16T11:20:00Z",
+    "parentId": 3,
+    "mentions": ["Mike Chen"]
+  }
+]

@@ -9,15 +9,21 @@ import Select from "@/components/atoms/Select";
 import StatusBadge from "@/components/molecules/StatusBadge";
 import PriorityBadge from "@/components/molecules/PriorityBadge";
 import ApperIcon from "@/components/ApperIcon";
+import RichTextEditor from "@/components/molecules/RichTextEditor";
+import CommentItem from "@/components/molecules/CommentItem";
+import ActivityItem from "@/components/molecules/ActivityItem";
 import { issueService } from "@/services/api/issueService";
-
+import { commentService } from "@/services/api/commentService";
 const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({});
   const [newComment, setNewComment] = useState("");
-
-  useEffect(() => {
+  const [comments, setComments] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentMentions, setCommentMentions] = useState([]);
+useEffect(() => {
     if (issue) {
       setFormData({
         title: issue.title || "",
@@ -28,8 +34,27 @@ const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
         dueDate: issue.dueDate || "",
         labels: issue.labels || []
       });
+      loadCommentsAndActivities();
     }
   }, [issue]);
+
+  const loadCommentsAndActivities = async () => {
+    if (!issue) return;
+    
+    setCommentsLoading(true);
+    try {
+      const [commentsData, activitiesData] = await Promise.all([
+        commentService.getByIssueId(issue.Id),
+        commentService.getActivitiesByIssueId(issue.Id)
+      ]);
+      setComments(commentsData);
+      setActivities(activitiesData);
+    } catch (error) {
+      toast.error("Failed to load comments: " + error.message);
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
 
   if (!issue) return null;
 
@@ -55,10 +80,57 @@ const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
     handleFieldChange("labels", labelArray);
   };
 
-  const handleSave = async () => {
+const handleSave = async () => {
     try {
       setLoading(true);
       const updatedIssue = await issueService.update(issue.Id, formData);
+      
+      // Track field changes for activity feed
+      const changes = [];
+      if (issue.status !== formData.status) {
+        changes.push({
+          type: 'status_change',
+          content: `changed status from **${issue.status}** to **${formData.status}**`,
+          fieldChanged: 'status',
+          oldValue: issue.status,
+          newValue: formData.status
+        });
+      }
+      if (issue.assignee !== formData.assignee) {
+        const oldAssignee = issue.assignee || 'Unassigned';
+        const newAssignee = formData.assignee || 'Unassigned';
+        changes.push({
+          type: 'assignee_change',
+          content: `changed assignee from **${oldAssignee}** to **${newAssignee}**`,
+          fieldChanged: 'assignee',
+          oldValue: issue.assignee,
+          newValue: formData.assignee
+        });
+      }
+      if (issue.priority !== formData.priority) {
+        changes.push({
+          type: 'priority_change',
+          content: `changed priority from **${issue.priority}** to **${formData.priority}**`,
+          fieldChanged: 'priority',
+          oldValue: issue.priority,
+          newValue: formData.priority
+        });
+      }
+
+      // Create activity entries for changes
+      for (const change of changes) {
+        await commentService.createActivity({
+          issueId: issue.Id,
+          authorName: "Current User",
+          authorAvatar: "CU",
+          ...change
+        });
+      }
+
+      if (changes.length > 0) {
+        loadCommentsAndActivities();
+      }
+
       toast.success("Issue updated successfully!");
       setIsEditing(false);
       if (onIssueUpdate) {
@@ -82,6 +154,79 @@ const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
       labels: issue.labels || []
     });
     setIsEditing(false);
+};
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      const commentData = {
+        issueId: issue.Id,
+        content: newComment,
+        authorName: "Current User",
+        authorAvatar: "CU",
+        mentions: commentMentions
+      };
+
+      await commentService.create(commentData);
+      toast.success("Comment added successfully!");
+      
+      setNewComment("");
+      setCommentMentions([]);
+      loadCommentsAndActivities();
+    } catch (error) {
+      toast.error("Failed to add comment: " + error.message);
+    }
+  };
+
+  const handleReplyToComment = async (parentId, content, mentions = []) => {
+    try {
+      const replyData = {
+        issueId: issue.Id,
+        content,
+        authorName: "Current User",
+        authorAvatar: "CU",
+        parentId,
+        mentions
+      };
+
+      await commentService.create(replyData);
+      toast.success("Reply added successfully!");
+      loadCommentsAndActivities();
+    } catch (error) {
+      toast.error("Failed to add reply: " + error.message);
+    }
+  };
+
+  const handleEditComment = async (commentId, content) => {
+    try {
+      await commentService.update(commentId, { content });
+      toast.success("Comment updated successfully!");
+      loadCommentsAndActivities();
+    } catch (error) {
+      toast.error("Failed to update comment: " + error.message);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+
+    try {
+      await commentService.delete(commentId);
+      toast.success("Comment deleted successfully!");
+      loadCommentsAndActivities();
+    } catch (error) {
+      toast.error("Failed to delete comment: " + error.message);
+    }
+  };
+
+  const getTimelineItems = () => {
+    const allItems = [
+      ...comments.filter(c => !c.parentId).map(c => ({ ...c, type: 'comment' })),
+      ...activities.map(a => ({ ...a, type: 'activity' }))
+    ];
+    
+    return allItems.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
   };
 
   const assigneeOptions = [
@@ -98,7 +243,6 @@ const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
     { value: "Chris Lee", label: "Chris Lee" },
     { value: "Kevin Brown", label: "Kevin Brown" }
   ];
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -195,40 +339,62 @@ const IssueDetailModal = ({ issue, isOpen, onClose, onIssueUpdate }) => {
                     </div>
 
                     {/* Comments Section */}
+{/* Comments and Activity Section */}
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-3">
-                        Comments
+                      <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
+                        <ApperIcon name="MessageSquare" size={16} className="mr-2" />
+                        Activity & Comments
                       </h4>
-                      <div className="space-y-4">
-                        {/* Comment Input */}
-                        <div className="border rounded-lg p-4">
-                          <Textarea
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Add a comment..."
-                            rows={3}
-                            className="mb-3"
-                          />
-                          <div className="flex justify-end">
-                            <Button
-                              size="sm"
-                              disabled={!newComment.trim()}
-                              onClick={() => {
-                                toast.info("Comment functionality coming soon!");
-                                setNewComment("");
-                              }}
-                            >
-                              Add Comment
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Placeholder for existing comments */}
-                        <div className="text-center py-8 text-gray-500">
-                          <ApperIcon name="MessageCircle" size={48} className="mx-auto mb-2 opacity-50" />
-                          <p>No comments yet. Be the first to comment!</p>
-                        </div>
+
+                      {/* New Comment Editor */}
+                      <div className="mb-6">
+                        <RichTextEditor
+                          value={newComment}
+                          onChange={setNewComment}
+                          onMention={setCommentMentions}
+                          mentions={commentMentions}
+                          onSubmit={handleAddComment}
+                          onCancel={() => {
+                            setNewComment("");
+                            setCommentMentions([]);
+                          }}
+                          placeholder="Write a comment..."
+                          className="border rounded-lg bg-white"
+                        />
                       </div>
+
+                      {/* Comments and Activities Timeline */}
+                      {commentsLoading ? (
+                        <div className="flex items-center justify-center py-8">
+                          <ApperIcon name="Loader2" size={24} className="animate-spin text-gray-400" />
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {getTimelineItems().length > 0 ? (
+                            getTimelineItems().map((item) => (
+                              <div key={`${item.type}-${item.Id}`}>
+                                {item.type === 'comment' ? (
+                                  <CommentItem
+                                    comment={item}
+                                    onReply={handleReplyToComment}
+                                    onEdit={handleEditComment}
+                                    onDelete={handleDeleteComment}
+                                    replies={comments.filter(c => c.parentId === item.Id)}
+                                    currentUser="Current User"
+                                  />
+                                ) : (
+                                  <ActivityItem activity={item} />
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center py-8 text-gray-500">
+                              <ApperIcon name="MessageCircle" size={48} className="mx-auto mb-2 opacity-50" />
+                              <p>No activity yet. Start the conversation!</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
