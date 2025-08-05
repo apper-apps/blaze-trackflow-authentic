@@ -8,7 +8,8 @@ function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   
-  const isIssuesPage = location.pathname === "/issues";
+const isIssuesPage = location.pathname === "/issues";
+  const isDashboardPage = location.pathname === "/dashboard";
   
   const handleNewIssue = () => {
     // Find the Issues component and call its handleNewIssue method
@@ -35,10 +36,18 @@ function Layout({ children }) {
       <div className="flex flex-col flex-1 lg:ml-64">
         <Header 
           onMobileMenuToggle={handleMobileMenuToggle}
-          showNewButton={isIssuesPage}
+showNewButton={isIssuesPage || isDashboardPage}
           onNewClick={() => {
             if (isIssuesPage && window.handleNewIssue) {
               window.handleNewIssue();
+            } else if (isDashboardPage) {
+              // Navigate to issues page and trigger new issue modal
+              window.location.href = '/issues';
+              setTimeout(() => {
+                if (window.handleNewIssue) {
+                  window.handleNewIssue();
+                }
+              }, 100);
             }
           }}
         />
