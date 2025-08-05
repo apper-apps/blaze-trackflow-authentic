@@ -41,7 +41,6 @@ const [isModalOpen, setIsModalOpen] = useState(false);
   }, []);
 
 const handleNewIssue = () => {
-    console.log('Issues: handleNewIssue function called directly');
     setIsCreateModalOpen(true);
   };
   const handleCreateIssue = async (issueData) => {
@@ -68,22 +67,6 @@ const handleNewIssue = () => {
     setSelectedIssue(null);
     setIsModalOpen(false);
   };
-// Expose handleNewIssue to parent Layout component
-React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log('Issues: Exposing handleNewIssue to window');
-window.handleNewIssue = () => {
-        console.log('Issues: handleNewIssue called from window');
-        setIsCreateModalOpen(true);
-      };
-    }
-    return () => {
-      if (typeof window !== 'undefined') {
-        console.log('Issues: Cleaning up window.handleNewIssue');
-        delete window.handleNewIssue;
-      }
-    };
-  }, []);
 
   // Get unique values for filters
   const uniqueStatuses = [...new Set(issues.map(issue => issue.status))];
