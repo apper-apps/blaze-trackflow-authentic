@@ -40,10 +40,10 @@ const [isModalOpen, setIsModalOpen] = useState(false);
     loadIssues();
   }, []);
 
-  const handleNewIssue = () => {
+const handleNewIssue = () => {
+    console.log('Issues: handleNewIssue function called directly');
     setIsCreateModalOpen(true);
   };
-
   const handleCreateIssue = async (issueData) => {
     try {
       await issueService.create(issueData);
@@ -69,16 +69,27 @@ const [isModalOpen, setIsModalOpen] = useState(false);
     setIsModalOpen(false);
   };
 // Expose handleNewIssue to parent Layout component
-  React.useEffect(() => {
+React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.handleNewIssue = handleNewIssue;
+      console.log('Issues: Exposing handleNewIssue to window');
+      window.handleNewIssue = () => {
+        console.log('Issues: handleNewIssue called from window');
+        try {
+          handleNewIssue();
+        } catch (error) {
+          console.error('Issues: Error in handleNewIssue:', error);
+          // Fallback - directly set modal state
+          setIsCreateModalOpen(true);
+        }
+      };
     }
     return () => {
       if (typeof window !== 'undefined') {
+        console.log('Issues: Cleaning up window.handleNewIssue');
         delete window.handleNewIssue;
       }
     };
-}, []);
+  }, []);
 
   // Get unique values for filters
   const uniqueStatuses = [...new Set(issues.map(issue => issue.status))];
