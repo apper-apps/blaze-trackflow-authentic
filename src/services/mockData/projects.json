@@ -1,3 +1,32 @@
-{
-  "name": "Documentation Site"
-}
+[
+  {
+    "Id": 1,
+    "name": "Documentation Site",
+    "description": "Comprehensive documentation platform for all our projects and APIs",
+    "status": "Active",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-20T14:30:00Z",
+    "memberCount": 5,
+    "issueCount": 12
+  },
+  {
+    "Id": 2,
+    "name": "Mobile App Redesign",
+    "description": "Complete redesign of the mobile application with modern UI/UX principles",
+    "status": "In Progress",
+    "createdAt": "2024-01-10T09:15:00Z",
+    "updatedAt": "2024-01-25T16:45:00Z",
+    "memberCount": 8,
+    "issueCount": 24
+  },
+  {
+    "Id": 3,
+    "name": "API Gateway Migration",
+    "description": "Migration from legacy API system to new microservices architecture",
+    "status": "Planning",
+    "createdAt": "2024-01-25T11:30:00Z",
+    "updatedAt": "2024-01-25T11:30:00Z",
+    "memberCount": 3,
+    "issueCount": 6
+  }
+]

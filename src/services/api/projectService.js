@@ -2,8 +2,13 @@ import projectsData from '@/services/mockData/projects.json';
 
 class ProjectService {
   constructor() {
-    this.projects = [...projectsData];
-    this.nextId = Math.max(...this.projects.map(p => p.Id), 0) + 1;
+    // Ensure projectsData is iterable before spreading
+    const validProjectsData = Array.isArray(projectsData) ? projectsData : 
+                              (projectsData && typeof projectsData === 'object') ? [projectsData] : [];
+    
+    this.projects = [...validProjectsData];
+    this.nextId = this.projects.length > 0 ? 
+                  Math.max(...this.projects.map(p => p.Id || 0), 0) + 1 : 1;
   }
 
   async getAll() {
