@@ -18,11 +18,13 @@ const CreateProjectModal = ({ onClose, onSubmit, project = null }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const statusOptions = [
-    { value: "Active", label: "Active" },
-    { value: "On Hold", label: "On Hold" },
-    { value: "Completed", label: "Completed" },
-    { value: "Archived", label: "Archived" }
+const statusOptions = [
+    "Active",
+    "In Progress", 
+    "Planning",
+    "On Hold",
+    "Completed",
+    "Archived"
   ];
 
   const validateForm = () => {
@@ -142,11 +144,16 @@ const CreateProjectModal = ({ onClose, onSubmit, project = null }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
               </label>
-              <Select
+<Select
                 value={formData.status}
-                onChange={(value) => handleInputChange("status", value)}
-                options={statusOptions}
-              />
+                onChange={(e) => handleInputChange("status", e.target.value)}
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </Select>
             </div>
 
             {/* Team Members */}
